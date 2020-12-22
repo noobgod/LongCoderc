@@ -5,9 +5,9 @@
 
 ```java
 public static void main(String[] args) {
-        System.out.println(IdEncrypter.decrypt("_pnOgexx_kECFpWMnYHg2A"));
-        System.out.println(IdEncrypter.encrypt(705L));
-        System.out.println(IdEncrypter.encrypt(708708144230092812L));
+    System.out.println(IdEncrypter.decrypt("_pnOgexx_kECFpWMnYHg2A"));
+    System.out.println(IdEncrypter.encrypt(705L));
+    System.out.println(IdEncrypter.encrypt(708708144230092812L));
 }
 ```
 输出
