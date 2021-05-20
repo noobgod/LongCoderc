@@ -11,20 +11,20 @@ import java.util.List;
 public class IdEncrypter {
 
     public static String encrypt(Long id) {
-        if (id == null) {
+        if(id == null) {
             throw new RuntimeException("系统异常!");
         }
-        return IdEncrypterForjava.encodeVid(id.intValue());
+        return IdEncrypterForjava.encodeLong(id);
     }
 
     public static long decrypt(String code) {
-        return IdEncrypterForjava.decodeVid(code);
+        return IdEncrypterForjava.decode(code);
     }
 
-    public static List<Long> decryptList(List<String> list) {
+    public static List<Long> decryptList(List<String> list){
         List<Long> ids = new ArrayList<Long>();
-        list.forEach(t -> {
-            long id = IdEncrypter.decrypt(t);
+        list.forEach(t->{
+            long id = IdEncrypterForjava.decode(t);
             if (id == 0) {
                 throw new RuntimeException("系统异常!");
             }
@@ -34,11 +34,11 @@ public class IdEncrypter {
     }
 
     public static void main(String[] args) {
+        System.out.println(IdEncrypter.encrypt(710541144794071040L));
         System.out.println(IdEncrypter.decrypt("_pnOgexx_kECFpWMnYHg2A"));
+        System.out.println(IdEncrypter.encrypt(364904448L));
+        System.out.println(IdEncrypter.decrypt("2EYTGnIZrTE"));
         System.out.println(IdEncrypter.encrypt(705L));
-        System.out.println(IdEncrypter.encrypt(706L));
-        System.out.println(IdEncrypter.encrypt(707L));
-        System.out.println(IdEncrypter.encrypt(708708144225898498L));
-        System.out.println(IdEncrypter.encrypt(708708144230092812L));
+        System.out.println(IdEncrypter.decrypt("UMlLFBQulMY"));
     }
 }

@@ -1,9 +1,12 @@
 package com.jianjian.longcoder;
 
+//import org.apache.log4j.Logger;
+
 import lombok.extern.slf4j.Slf4j;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
+import java.text.DecimalFormat;
 import java.util.Arrays;
 
 /**
@@ -11,26 +14,67 @@ import java.util.Arrays;
  * @Date: create at 2020/11/29 3:02 下午
  * @Description:
  */
+/**
+ * php/java -> 755.887552485/3184.7133757961783/3974.56279809221[useGlobals]/
+ * 25575.447570332482[includeLock]
+ *
+ * @author cgao fujie(copy from tudou)
+ * @TODO i don't know if global.iv etc can thread safe
+ */
 @Slf4j
 public class IdEncrypterForjava {
-
+//    private static final Logger logger = Logger.getLogger(IdEncrypterForjava.class);
     private static final byte[] idCrypterSaltBytes = "H0w_many_r0ad_a_man_must_been_wa1k_d0wn, before_they_ca11_him_a_man.".getBytes(Charset.forName("ISO-8859-1"));
     private static Blowfish blowfish;
-
+    private static DecimalFormat df = new DecimalFormat("000000000");
     static {
         blowfish = new Blowfish(Arrays.copyOf(idCrypterSaltBytes, 32), Arrays.copyOfRange(idCrypterSaltBytes, 32, 40));
     }
 
+    public static String encodeLong(Long id) {
+        if(id > Integer.MAX_VALUE) {
+            String idv = id.toString();
+            StringBuilder sb = new StringBuilder();
+            int i;
+            for(i =0;i<idv.length()/9;i++) {
+                sb.append(encodeVid(Integer.valueOf(id.toString().substring(9*i,9*i+9))));
+            }
+            if (9 * i < idv.length()) {
+                sb.append(encodeVid(Integer.valueOf(id.toString().substring(9 * i))));
+            }
+            return sb.toString();
+        } else {
+            return encodeVid(id.intValue());
+        }
+    }
+
+
+
+
+    public static Long decode(String result) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < result.length() / 11; i++) {
+            int temp = decodeVid(result.substring(11 * i, 11 * i + 11));
+            if(i> 0) {
+                sb.append(df.format(temp));
+            } else {
+                sb.append(temp);
+            }
+        }
+        return Long.valueOf(sb.toString());
+    }
+
     public static String encodeVid(int id) {
         try {
+
             byte[] sourceBytes = new byte[8];
             if (id < 100000000) {
-                int2bytes(sourceBytes, id);
+                int2bytes(sourceBytes, (int)id);
             } else {
-                sourceBytes[0] = (byte) ((id >> 24) & 0xFF);
-                sourceBytes[1] = (byte) ((id >> 16) & 0xFF);
-                sourceBytes[2] = (byte) ((id >> 8) & 0xFF);
-                sourceBytes[3] = (byte) ((id) & 0xFF);
+                sourceBytes[0] = (byte) ((id >> 24) & 0xFFFFF);
+                sourceBytes[1] = (byte) ((id >> 16) & 0xFFFFF);
+                sourceBytes[2] = (byte) ((id >> 8) & 0xFFFFF);
+                sourceBytes[3] = (byte) ((id) & 0xFFFFF);
                 sourceBytes[4] = Byte.MAX_VALUE;
                 sourceBytes[5] = Byte.MAX_VALUE;
                 sourceBytes[6] = Byte.MAX_VALUE;
@@ -39,7 +83,6 @@ public class IdEncrypterForjava {
             byte[] encryptedBytes = blowfish.encrypt(sourceBytes);
 
             char[] base64Chars = Base64.encode(encryptedBytes);
-
             int i;
             for (i = 0; i < base64Chars.length; i++) {
                 if (base64Chars[i] == '=') {

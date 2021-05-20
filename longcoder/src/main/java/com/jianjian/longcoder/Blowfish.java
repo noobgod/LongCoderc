@@ -1,11 +1,31 @@
 package com.jianjian.longcoder;
 
+
 /**
- * @Author: wujiajian776
- * @Date: create at 2020/11/29 3:00 下午
- * @Description:
+ * $RCSfile$
+ * $Revision: 3657 $
+ * $Date: 2002-09-09 08:31:31 -0700 (Mon, 09 Sep 2002) $
+ *
+ * Adapted from Markus Hahn's Blowfish package so that all functionality is
+ * in a single source file. Please visit the following URL for his excellent
+ * package: http://www.hotpixel.net/software.html
+ *
+ * Copyright (c) 1997-2002 Markus Hahn <markus_hahn@gmx.net>
+ *
+ * Released under the Apache 2.0 license.
+ */
+
+
+/**
+ * A class that provides easy Blowfish encryption.
+ * <p>
+ *
+ * @author Markus Hahn <markus_hahn@gmx.net>
+ * @author Gaston Dombiak
+ * @author jeff
  */
 public class Blowfish {
+
     private BlowfishCBC m_bfish;
     private byte[] iv;
 
